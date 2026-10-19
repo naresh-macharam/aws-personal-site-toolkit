@@ -1,0 +1,133 @@
+{{ define "main" }}
+<style>
+  .post-nav{ font-family:var(--font-mono); font-size:12.5px; color:var(--ink-faint); margin-bottom:36px; }
+  .post-nav a:hover{ color:var(--accent); }
+
+  .post-header{ max-width:70ch; margin-bottom:48px; padding-bottom:32px; border-bottom:1px solid var(--border-soft); }
+  .post-header h1{ font-size:clamp(1.8rem,3.4vw,2.5rem); margin-bottom:16px; line-height:1.15; }
+  .post-meta{ font-family:var(--font-mono); font-size:12.5px; color:var(--ink-faint); }
+
+  .post-content{ max-width:70ch; font-size:16px; color:var(--ink-dim); }
+  .post-content p{ margin-bottom:20px; }
+  .post-content h2{ font-size:22px; color:var(--ink); margin:40px 0 16px; }
+  .post-content h3{ font-size:18px; color:var(--ink); margin:32px 0 14px; }
+  .post-content a{ color:var(--accent); text-decoration:underline; text-underline-offset:3px; }
+  .post-content code{
+    font-family:var(--font-mono); font-size:13.5px; background:var(--surface);
+    border:1px solid var(--border); padding:2px 6px; border-radius:3px; color:var(--ink);
+  }
+  .post-content pre{
+    background:var(--surface); border:1px solid var(--border); border-radius:6px;
+    padding:18px 20px; overflow-x:auto; margin-bottom:24px;
+  }
+  .post-content pre code{ border:none; background:none; padding:0; }
+  .post-content ul, .post-content ol{ margin:0 0 20px 22px; }
+  .post-content li{ margin-bottom:8px; }
+  .post-content blockquote{
+    border-left:2px solid var(--accent); padding-left:18px; margin:24px 0;
+    color:var(--ink-faint); font-style:normal;
+  }
+  .post-content img{ border-radius:6px; margin:24px 0; }
+
+  .comment-section{ max-width:70ch; margin-top:64px; padding-top:40px; border-top:1px solid var(--border-soft); }
+  .comment-section h3{ font-size:18px; margin-bottom:20px; }
+  .comment-field{ margin-bottom:18px; }
+  .comment-field label{ display:block; font-family:var(--font-mono); font-size:12px; color:var(--ink-faint); margin-bottom:8px; }
+  .comment-field input, .comment-field textarea{
+    width:100%; background:var(--surface); border:1px solid var(--border);
+    color:var(--ink); padding:12px 14px; border-radius:var(--radius);
+    font-family:var(--font-body); font-size:14px;
+  }
+  .comment-field input:focus, .comment-field textarea:focus{ border-color:var(--accent); outline:none; }
+  .comment-field textarea{ min-height:100px; resize:vertical; }
+  .comment-submit{
+    font-family:var(--font-mono); font-size:13.5px; padding:12px 22px; border-radius:var(--radius);
+    background:var(--ink); color:var(--bg); border:none; cursor:pointer; font-weight:500;
+  }
+  .comment-submit:hover{ background:var(--accent); }
+  .comment-status{ font-size:12.5px; color:var(--ink-faint); margin-top:10px; }
+</style>
+
+<p class="post-nav"><a href="/">← All posts</a></p>
+
+<header class="post-header">
+  <h1>{{ .Title }}</h1>
+  <p class="post-meta">{{ .Date.Format "January 2, 2006" }}{{ with .Params.readingtime }} · {{ . }} min read{{ end }}</p>
+</header>
+
+<div class="post-content">
+  {{ .Content }}
+</div>
+
+{{ if .Site.Params.commentEndpoint }}
+<section class="comment-section">
+  <h3>Leave a comment</h3>
+  <form id="comment-form" data-post-title="{{ .Title }}" data-post-url="{{ .Permalink }}">
+    <div style="position:absolute; left:-9999px; width:1px; height:1px; overflow:hidden;" aria-hidden="true">
+      <label for="c-website">Leave this field empty</label>
+      <input type="text" id="c-website" name="website" tabindex="-1" autocomplete="off">
+    </div>
+    <div class="comment-field">
+      <label for="c-name">Name</label>
+      <input id="c-name" name="name" type="text" required>
+    </div>
+    <div class="comment-field">
+      <label for="c-email">Email</label>
+      <input id="c-email" name="email" type="email" required>
+    </div>
+    <div class="comment-field">
+      <label for="c-comment">Comment</label>
+      <textarea id="c-comment" name="comment" required></textarea>
+    </div>
+    <button type="submit" class="comment-submit">Post comment →</button>
+    <p class="comment-status" id="comment-status"></p>
+  </form>
+</section>
+
+<meta id="site-config" data-comment-endpoint="{{ .Site.Params.commentEndpoint }}">
+
+<script>
+  const config = document.getElementById('site-config');
+  const COMMENT_ENDPOINT = config.dataset.commentEndpoint;
+  const commentForm = document.getElementById('comment-form');
+  const commentStatus = document.getElementById('comment-status');
+
+  if (commentForm) {
+    commentForm.addEventListener('submit', async (e) => {
+      e.preventDefault();
+      const submitBtn = commentForm.querySelector('button[type="submit"]');
+      submitBtn.disabled = true;
+      commentStatus.textContent = 'Sending…';
+
+      const payload = {
+        name: commentForm.name.value,
+        email: commentForm.email.value,
+        message: commentForm.comment.value,
+        website: commentForm.website.value,
+        source: 'blog comment',
+        post: commentForm.dataset.postTitle,
+        post_url: commentForm.dataset.postUrl
+      };
+
+      try {
+        const res = await fetch(COMMENT_ENDPOINT, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(payload)
+        });
+        if (res.ok) {
+          commentStatus.textContent = 'Comment sent — thanks!';
+          commentForm.reset();
+        } else {
+          commentStatus.textContent = 'Something went wrong. Please try again.';
+        }
+      } catch (err) {
+        commentStatus.textContent = 'Something went wrong. Please try again.';
+      } finally {
+        submitBtn.disabled = false;
+      }
+    });
+  }
+</script>
+{{ end }}
+{{ end }}

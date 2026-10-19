@@ -1,0 +1,23 @@
+# Terraform — state files can contain secrets and resource details.
+# NEVER commit these to a public repo.
+**/.terraform/
+*.tfstate
+*.tfstate.*
+crash.log
+*.tfvars
+!*.tfvars.example
+
+# Build output generated from your own values
+infra/generated/
+infra/environments/*/generated/
+infra/modules/contact-pipeline/files/*.zip
+
+# Hugo build output
+site/public/
+site/resources/_gen/
+
+# OS / editor noise
+.DS_Store
+Thumbs.db
+.vscode/
+.idea/

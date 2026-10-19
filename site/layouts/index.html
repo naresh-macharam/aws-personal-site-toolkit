@@ -1,0 +1,44 @@
+{{ define "main" }}
+<style>
+  .blog-hero{ padding:40px 0 56px; border-bottom:1px solid var(--border-soft); margin-bottom:56px; }
+  .blog-hero h1{ font-size:clamp(1.9rem,3.6vw,2.6rem); margin-bottom:14px; }
+  .blog-hero p{ color:var(--ink-dim); max-width:60ch; font-size:15.5px; }
+
+  .post-list{ display:flex; flex-direction:column; }
+  .post-row{
+    display:grid; grid-template-columns:140px 1fr; gap:32px;
+    padding:28px 0; border-bottom:1px solid var(--border-soft);
+    transition:opacity .15s ease;
+  }
+  .post-row:hover{ opacity:.85; }
+  @media (max-width:640px){ .post-row{ grid-template-columns:1fr; gap:8px; } }
+  .post-date{ font-family:var(--font-mono); font-size:12.5px; color:var(--ink-faint); padding-top:4px; }
+  .post-body h2{ font-size:19px; margin-bottom:8px; }
+  .post-body h2 a:hover{ color:var(--accent); }
+  .post-body p{ font-size:14.5px; color:var(--ink-dim); margin-bottom:10px; }
+  .post-read{ font-family:var(--font-mono); font-size:12.5px; color:var(--accent); }
+
+  .empty-state{ color:var(--ink-faint); font-size:14.5px; font-family:var(--font-mono); padding:40px 0; }
+</style>
+
+<div class="blog-hero">
+  <p class="eyebrow">~/blog</p>
+  <h1>{{ .Site.Params.blogHeadline | default "Notes and write-ups." }}</h1>
+  <p>{{ .Site.Params.blogSubhead | default "Thoughts on what I build and what I learn along the way." }}</p>
+</div>
+
+<div class="post-list">
+  {{ range .Site.RegularPages }}
+  <article class="post-row">
+    <div class="post-date">{{ .Date.Format "Jan 2, 2006" }}</div>
+    <div class="post-body">
+      <h2><a href="{{ .Permalink }}">{{ .Title }}</a></h2>
+      <p>{{ .Summary }}</p>
+      <a class="post-read" href="{{ .Permalink }}">Read post →</a>
+    </div>
+  </article>
+  {{ else }}
+  <p class="empty-state">$ no posts yet — first one's coming soon</p>
+  {{ end }}
+</div>
+{{ end }}

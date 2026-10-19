@@ -1,0 +1,21 @@
+# Copy this file to terraform.tfvars and fill in your own values.
+# Never commit terraform.tfvars itself if it contains anything sensitive.
+
+aws_region  = "eu-west-2"
+test_domain = "tftest.yourdomain.com"
+
+# Leave as "" if your DNS is on Namecheap (or any non-Route53 registrar).
+# If it IS on Route53, put the hosted zone ID here to skip the manual
+# validation step entirely.
+route53_zone_id = ""
+
+# Milestone 3 — the throwaway repo that will deploy to this test site
+github_org  = "naresh852"
+github_repo = "test-site-deploy"
+
+# Milestone 4 — a second throwaway repo for the Hugo blog deploy test
+blog_github_repo = "test-blog-deploy"
+
+# Milestone 5 — where test contact/comment submissions should land
+contact_recipient_email = "you@example.com"
+contact_sender_email    = "you@example.com"

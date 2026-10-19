@@ -1,0 +1,56 @@
+# Copy this file to terraform.tfvars and fill in your own values.
+# Everything below this block has a working default in variables.tf —
+# only touch it if you want to customize branding or behavior.
+
+domain_name   = "example.com"
+aws_region    = "eu-west-2"
+
+github_org    = "yourusername"
+homepage_repo = "personal-website"
+blog_repo     = "my-blog"
+
+# REQUIRED for any repo created on/after July 15, 2026 (GitHub's
+# "immutable subject claims" OIDC change) — which is effectively every
+# new repo now. Without these, role assumption fails with
+# "Not authorized to perform sts:AssumeRoleWithWebIdentity" no matter
+# how correct your org/repo names are — this is the single most common
+# failure point in this whole setup.
+#
+# Find your numeric IDs (requires the GitHub CLI, `gh auth login` first):
+#   gh api users/yourusername --jq .id
+#   gh api repos/yourusername/personal-website --jq .id
+#   gh api repos/yourusername/my-blog --jq .id
+#
+# No GitHub CLI? Visit these URLs in a browser and read the "id" field:
+#   https://api.github.com/users/yourusername
+#   https://api.github.com/repos/yourusername/personal-website
+#   https://api.github.com/repos/yourusername/my-blog
+github_owner_id   = ""
+homepage_repo_id  = ""
+blog_repo_id      = ""
+
+contact_recipient_email = "you@example.com"
+contact_sender_email    = "you@example.com"
+
+# Leave "" if your DNS is on Namecheap or another external registrar —
+# see the README for the one manual step that requires.
+route53_zone_id = ""
+
+# false if a GitHub OIDC provider already exists in this AWS account
+# (true is correct for a genuinely fresh account/setup)
+create_oidc_provider = true
+
+# --- Optional branding overrides ---
+# site_title       = "Jane Doe"
+# blog_headline    = "Field notes from a cloud architect."
+# colors = {
+#   accent = "#5EEAD4"
+# }
+
+# Where YOU published this toolkit (after forking it). The generated
+# deploy workflows reference this repo's reusable workflows, so a fix
+# pushed here reaches your pipelines automatically.
+toolkit_repo = "yourusername/aws-personal-site-toolkit"
+# Must match your toolkit repo's real default branch (often "main", sometimes "master").
+# Check: gh api repos/<you>/<toolkit-repo> --jq .default_branch
+toolkit_ref  = "main"

@@ -1,0 +1,43 @@
+# Copy this to hugo.yaml and fill in your own values.
+# baseURL must include the /blog/ path if your blog lives under a path
+# on your main domain, matching the static-site module's routing.
+baseURL: "https://yourdomain.com/blog/"
+languageCode: "en-us"
+title: "Your Name — Notes"
+
+params:
+  description: "Write-ups on what I build and what I learn along the way."
+
+  # Points the "Blog" logo and footer "back to main site" link correctly.
+  homeURL: "https://yourdomain.com/"
+  logoText: "yourname"
+
+  # Nav links shown alongside "Blog" in the header — these point back to
+  # sections on your homepage.
+  homeNavLinks:
+    - label: "About"
+      url: "https://yourdomain.com/#about"
+    - label: "Work"
+      url: "https://yourdomain.com/#work"
+
+  blogHeadline: "Notes and write-ups."
+  blogSubhead: "Thoughts on what I build and what I learn along the way."
+
+  # Leave commentEndpoint unset/empty to hide the comment form entirely
+  # (e.g. before Milestone 5 is wired up). Once you have the API Gateway
+  # URL from the contact-pipeline module, put it here.
+  commentEndpoint: ""
+
+  # Brand colors — every one has a sensible default in the template, so
+  # you only need to override what you want to change.
+  colors:
+    bg: "#0B0F14"
+    surface: "#121821"
+    surface2: "#1A222D"
+    border: "#26303B"
+    borderSoft: "#1E2731"
+    ink: "#F2F5F7"
+    inkDim: "#A9B4BE"
+    inkFaint: "#6C7784"
+    accent: "#34D8A6"
+    accentDim: "#1E5B4C"
